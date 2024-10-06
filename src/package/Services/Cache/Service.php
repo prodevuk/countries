@@ -92,6 +92,8 @@ class Service implements CacheInterface
         if ($this->enabled()) {
             return $this->manager->get($key, $default);
         }
+
+        return null;
     }
 
     /**
@@ -120,13 +122,13 @@ class Service implements CacheInterface
      * @param  null  $ttl
      * @return bool
      */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
     {
         if ($this->enabled()) {
             return $this->manager->set($key, $value, $ttl);
         }
 
-        return $value;
+        return false;
     }
 
     /**
@@ -135,17 +137,21 @@ class Service implements CacheInterface
      * @param  string  $key
      * @return bool
      */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $this->manager->delete($key);
+
+        return true;
     }
 
     /**
      * Wipe clean the entire cache's keys.
      */
-    public function clear()
+    public function clear(): bool
     {
         $this->manager->clear();
+
+        return true;
     }
 
     /**
@@ -155,7 +161,7 @@ class Service implements CacheInterface
      * @param  null  $default
      * @return array
      */
-    public function getMultiple($keys, $default = null)
+    public function getMultiple($keys, $default = null): iterable
     {
         return $this->manager->getMultiple($keys, $default);
     }
@@ -167,9 +173,9 @@ class Service implements CacheInterface
      * @param  null  $ttl
      * @return bool
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple($values, $ttl = null): bool
     {
-        return $this->manager->setMultiple($keys, $ttl);
+        return $this->manager->setMultiple($values, $ttl);
     }
 
     /**
@@ -178,9 +184,9 @@ class Service implements CacheInterface
      * @param $keys
      * @return bool|void
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple($keys): bool
     {
-        $this->manager->deleteMultiple($keys);
+        return $this->manager->deleteMultiple($keys);
     }
 
     /**
@@ -189,7 +195,7 @@ class Service implements CacheInterface
      * @param  string  $key
      * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return $this->manager->has($key);
     }
